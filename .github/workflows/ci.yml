@@ -23,10 +23,12 @@ jobs:
         run: dotnet workload install maui
 
       - name: Restore dependencies
-        run: dotnet restore TaskListApp.sln
+        run: |
+          dotnet restore TaskListApp/TaskListApp.csproj
+          dotnet restore TaskListApp/Tests/TaskListApp.Tests.csproj
 
-      - name: Build solution
-        run: dotnet build TaskListApp.sln --configuration Release --no-restore
+      - name: Build main app (Windows)
+        run: dotnet build TaskListApp/TaskListApp.csproj -f net10.0-windows10.0.19041.0 --configuration Release --no-restore
 
-      - name: Run tests
-        run: dotnet test TaskListApp/Tests/TaskListApp.Tests.csproj --configuration Release --no-build --verbosity normal
+      - name: Build and run tests
+        run: dotnet test TaskListApp/Tests/TaskListApp.Tests.csproj --configuration Release --no-restore --verbosity normal
