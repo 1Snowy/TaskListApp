@@ -38,5 +38,5 @@ jobs:
       - name: Upload Windows App
         uses: actions/upload-artifact@v4
         with:
-          name: Todo-Windows-x64
+          name: TaskListApp-Windows-x64
           path: ./publish-win
