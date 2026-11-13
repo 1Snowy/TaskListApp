@@ -22,8 +22,21 @@ jobs:
       - name: Install MAUI workload
         run: dotnet workload install maui
 
-      - name: Build main app (Windows)
-        run: dotnet build TaskListApp/TaskListApp.csproj -f net10.0-windows10.0.19041.0 -r win-x64 --configuration Release
+      - name: Build and publish Windows app
+        run: dotnet publish TaskListApp/TaskListApp.csproj -f net10.0-windows10.0.19041.0 -r win-x64 -c Release -p:WindowsPackageType=None -o ./publish-win
 
-      - name: Build and run tests
-        run: dotnet test TaskListApp/Tests/TaskListApp.Tests.csproj --configuration Release --verbosity normal
+      - name: Run tests with results
+        run: dotnet test TaskListApp/Tests/TaskListApp.Tests.csproj -c Release --logger "trx;LogFileName=test-results.trx" --results-directory ./test-results
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test-results
+          path: ./test-results
+
+      - name: Upload Windows App
+        uses: actions/upload-artifact@v4
+        with:
+          name: Todo-Windows-x64
+          path: ./publish-win
