@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="TaskListApp.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Список задач">
+
+    <Grid Padding="15" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="8">
+
+        <Label
+            Grid.Row="0"
+            Text="Мой список задач"
+            FontSize="24"
+            HorizontalOptions="Center" />
+
+        <Entry
+            Grid.Row="1"
+            Placeholder="Введите задачу"
+            Text="{Binding NewTaskTitle}" />
+
+        <Picker
+            Grid.Row="2"
+            Title="Категория"
+            ItemsSource="{Binding Categories}"
+            SelectedItem="{Binding SelectedCategory}" />
+
+        <Picker
+            Grid.Row="3"
+            Title="Добавить как подзадачу"
+            ItemsSource="{Binding ParentTasks}"
+            ItemDisplayBinding="{Binding Title}"
+            SelectedItem="{Binding SelectedParent}" />
+
+        <Button
+            Grid.Row="4"
+            Text="Добавить задачу"
+            Command="{Binding AddTaskCommand}" />
+
+        <CollectionView
+            Grid.Row="5"
+            ItemsSource="{Binding Tasks}">
+
+            <CollectionView.EmptyView>
+                <Label
+                    Text="Задач пока нет"
+                    HorizontalOptions="Center"
+                    TextColor="Gray"
+                    Margin="10" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid
+                        Padding="5"
+                        ColumnDefinitions="*,Auto,Auto"
+                        RowDefinitions="Auto,Auto">
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="{Binding DisplayTitle}"
+                            FontSize="16"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="{Binding Category}"
+                            FontSize="12"
+                            TextColor="Gray" />
+
+                        <Button
+                            Grid.RowSpan="2"
+                            Grid.Column="1"
+                            Text="Готово"
+                            FontSize="12"
+                            Padding="8,4"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleTaskCommand}"
+                            CommandParameter="{Binding .}" />
+
+                        <Button
+                            Grid.RowSpan="2"
+                            Grid.Column="2"
+                            Text="Удалить"
+                            FontSize="12"
+                            Padding="8,4"
+                            BackgroundColor="DarkRed"
+                            TextColor="White"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteTaskCommand}"
+                            CommandParameter="{Binding .}" />
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
