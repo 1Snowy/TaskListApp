@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 
 namespace TaskListApp.Models;
 
@@ -14,15 +14,14 @@ public class TodoItem
 
     public bool IsCompleted { get; set; }
 
-    // 0 означает, что задача является основной.
-    public int ParentId { get; set; }
+    public int? ParentId { get; set; }
 
     [Ignore]
     public string DisplayTitle
     {
         get
         {
-            string prefix = ParentId == 0 ? "" : "    - ";
+            string prefix = ParentId == null ? "" : "    - ";
             string mark = IsCompleted ? "✓ " : "";
             return prefix + mark + Title;
         }
