@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using TaskListApp.Models;
@@ -44,14 +44,16 @@ public partial class MainViewModel : ObservableObject
         Tasks.Clear();
         ParentTasks.Clear();
 
+        // Заглушка для пикера «родителя». Id = 0 — служебное значение только для UI:
+        // при сохранении оно превращается в null (задача без родителя).
         ParentTasks.Add(new TodoItem
         {
             Id = 0,
             Title = "Основная задача"
         });
 
-        // 1. Сначала берем только основные задачи (где ParentId == 0)
-        var mainTasks = items.Where(x => x.ParentId == 0).ToList();
+        // 1. Сначала берем только основные задачи (где ParentId == null)
+        var mainTasks = items.Where(x => x.ParentId == null).ToList();
 
         foreach (var mainTask in mainTasks)
         {
@@ -80,7 +82,9 @@ public partial class MainViewModel : ObservableObject
         {
             Title = NewTaskTitle.Trim(),
             Category = SelectedCategory,
-            ParentId = SelectedParent?.Id ?? 0
+            // Заглушка пикера имеет Id = 0 — значит «без родителя», в БД уходит null.
+            // Остальные значения — Id родителя: его целостность проверит внешний ключ.
+            ParentId = SelectedParent == null || SelectedParent.Id == 0 ? null : SelectedParent.Id
         };
 
         await service.AddAsync(item);
